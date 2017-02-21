@@ -1,38 +1,53 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
 import './App.css';
+import TodoInput from './components/TodoInput';
 
 class App extends Component {
+
+    constructor(props) {
+        super();
+        this.state = {
+            mainInput  : '',
+            todos      : [],
+            filterState: 'active',
+            editingMode: false,
+            maxId      : 0
+
+        };
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleEnter = this.handleEnter.bind(this);
+    }
+
     render() {
         return (
-            <div>
+            <div onKeyPress={this.handleEnter}>
+
                 <header className="header">
                     <h1>Todos</h1>
-                    <input className="new-todo" placeholder="What needs to be done?" autofocus/>
+                    <TodoInput handleChange={this.handleInputChange} value={this.state.mainInput}/>
                 </header>
                 {/*<!-- This section should be hidden by default and shown when there are todos -->*/}
                 <section className="main">
                     <input className="toggle-all" type="checkbox"/>
-                    <label for="toggle-all">Mark all as complete</label>
+                    <label htmlFor="toggle-all">Mark all as complete</label>
                     <ul className="todo-list">
                         {/*<!-- These are here just to show the structure of the list items -->*/}
                         {/*<!-- List items should get the className `editing` when editing and `completed` when marked as completed -->*/}
-                        <li className="completed">
-                            <div className="view">
-                                <input className="toggle" type="checkbox" checked/>
-                                <label>Taste JavaScript</label>
-                                <button className="destroy"/>
-                            </div>
-                            <input className="edit" value="Create a TodoMVC template"/>
-                        </li>
-                        <li>
-                            <div className="view">
-                                <input className="toggle" type="checkbox"/>
-                                <label>Buy a unicorn</label>
-                                <button className="destroy"/>
-                            </div>
-                            <input className="edit" value="Rule the web"/>
-                        </li>
+                        {this.state.todos.map(t => (
+                            <li className={t.completed ? 'completed' : ''} key={t.id}>
+                                <div className="view">
+                                    <input type="checkbox"
+                                           className="toggle"
+                                           checked={t.completed}
+                                           onChange={e => this.toggleTodo(t.id)}/>
+                                    <label>{t.title}</label>
+                                    <button className="destroy"
+                                            onClick={e => this.deleteTodo(t.id)}/>
+                                </div>
+                                <input className="edit" value="Create a TodoMVC template"/>
+                            </li>
+                        ))}
                     </ul>
                 </section>
                 {/*<!-- This footer should hidden by default and shown when there are todos -->*/}
@@ -57,6 +72,48 @@ class App extends Component {
             </div>
 
         )
+    }
+
+    handleInputChange(event) {
+        this.setState({
+            mainInput: event.target.value
+        });
+    }
+
+    handleEnter(event) {
+        if( event.which === 13 ) {
+            this.createTodo(this.state.mainInput);
+        }
+    }
+
+    createTodo(title) {
+        let state = this.state;
+        this.setState({
+            todos    : state.todos.concat({
+                id       : state.maxId + 1,
+                title,
+                completed: false
+            }),
+            mainInput: '',
+            maxId    : state.maxId + 1
+        });
+    }
+
+    deleteTodo(id) {
+        this.setState({
+            todos: this.state.todos.filter(t => t.id !== id)
+        })
+    }
+
+    toggleTodo(id) {
+        this.setState({
+            todos: this.state.todos.map(t => {
+                if( t.id === id ) {
+                    t.completed = !t.completed;
+                }
+                return t;
+            })
+        })
     }
 }
 
