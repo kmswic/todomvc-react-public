@@ -10,7 +10,6 @@ class App extends Component {
             mainInput  : '',
             todos      : [],
             filterState: 'active',
-            editingMode: false,
             maxId      : 0
 
         };
@@ -21,11 +20,12 @@ class App extends Component {
 
     render() {
         return (
-            <div onKeyPress={this.handleEnter}>
+            <div>
 
                 <header className="header">
                     <h1>Todos</h1>
-                    <TodoInput handleChange={this.handleInputChange} value={this.state.mainInput}/>
+                    <TodoInput enterHandler={this.handleEnter} handleChange={this.handleInputChange}
+                               value={this.state.mainInput}/>
                 </header>
                 {/*<!-- This section should be hidden by default and shown when there are todos -->*/}
                 <section className="main">
@@ -35,17 +35,29 @@ class App extends Component {
                         {/*<!-- These are here just to show the structure of the list items -->*/}
                         {/*<!-- List items should get the className `editing` when editing and `completed` when marked as completed -->*/}
                         {this.state.todos.map(t => (
-                            <li className={t.completed ? 'completed' : ''} key={t.id}>
-                                <div className="view">
+                            <li className={`${t.completed && 'completed'} ${t.editing
+                                                                            && 'editing'}`}
+                                key={t.id}
+                            >
+                                <div className="view"
+                                     onDoubleClick={e => this.toggleEditingTodo(t.id)}
+                                >
                                     <input type="checkbox"
                                            className="toggle"
                                            checked={t.completed}
-                                           onChange={e => this.toggleTodo(t.id)}/>
-                                    <label>{t.title}</label>
+                                           onChange={e => this.toggleTodo(t.id)}
+                                    />
+                                    <label>
+                                        {t.title}
+                                    </label>
                                     <button className="destroy"
-                                            onClick={e => this.deleteTodo(t.id)}/>
+                                            onClick={e => this.deleteTodo(t.id)}
+                                    />
                                 </div>
-                                <input className="edit" value="Create a TodoMVC template"/>
+                                <input className="edit" value={t.title}
+                                       onChange={e => this.editTodo(t.id, e.target.value)}
+                                       onKeyPress={e => this.handleEnterInline(e, t.id)}
+                                />
                             </li>
                         ))}
                     </ul>
@@ -82,9 +94,14 @@ class App extends Component {
 
     handleEnter(event) {
         if( event.which === 13 ) {
-            this.createTodo(this.state.mainInput);
+            let title = this.state.mainInput.trim();
+            if( title !== '' ) {
+                this.createTodo(title);
+            }
         }
     }
+
+
 
     createTodo(title) {
         let state = this.state;
@@ -92,7 +109,8 @@ class App extends Component {
             todos    : state.todos.concat({
                 id       : state.maxId + 1,
                 title,
-                completed: false
+                completed: false,
+                editing  : false,
             }),
             mainInput: '',
             maxId    : state.maxId + 1
@@ -105,15 +123,49 @@ class App extends Component {
         })
     }
 
-    toggleTodo(id) {
+    updateTodo(id, fn) {
         this.setState({
             todos: this.state.todos.map(t => {
                 if( t.id === id ) {
-                    t.completed = !t.completed;
+                    let newTodo = fn(t);
+                    return newTodo;
                 }
                 return t;
             })
         })
+    }
+
+    toggleTodo(id) {
+        this.updateTodo(id, t => {
+            t.completed = !t.completed;
+            return t;
+        });
+    }
+
+    toggleEditingTodo(id) {
+        this.updateTodo(id, t => {
+            t.editing = !t.editing;
+            return t;
+        })
+    }
+
+    editTodo(id, title) {
+        this.updateTodo(id, t => {
+            t.title = title;
+            return t;
+        })
+    }
+
+    handleEnterInline(event, id) {
+        if( event.which === 13 ) {
+            let todo = this.state.todos.filter(t => t.id === id)[0];
+            if( todo.title.trim() === '' ) {
+                this.deleteTodo(id);
+            } else {
+                this.editTodo(id, todo.title.trim());
+                this.toggleEditingTodo(id);
+            }
+        }
     }
 }
 
