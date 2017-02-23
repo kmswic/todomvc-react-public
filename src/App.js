@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import MainInput from './components/MainInput';
 import TodoList from './components/TodoList';
+import FilterBox from './components/FilterBox';
 
 class App extends Component {
 
@@ -37,21 +38,10 @@ class App extends Component {
                      item{this.state.todos.length % 10 !== 1 ? 's' : null} left
                 </span>
                 {/*<!-- Remove this if you don't implement routing -->*/}
-                <ul className="filters">
-                    <li>
-                        <a className={this.state.filter === 'all' && 'selected'} href="#/"
-                           onClick={e => this.setState({filter: 'all'})}>All</a>
-                    </li>
-                    <li>
-                        <a href="#/active" className={this.state.filter === 'active' && 'selected'}
-                           onClick={e => this.setState({filter: 'active'})}>Active</a>
-                    </li>
-                    <li>
-                        <a href="#/completed"
-                           className={this.state.filter === 'completed' && 'selected'}
-                           onClick={e => this.setState({filter: 'completed'})}>Completed</a>
-                    </li>
-                </ul>
+                <FilterBox
+                    filter={this.state.filter}
+                    set={newState => this.setState({filter: newState})}
+                />
                 {/*<!-- Hidden if no completed items are left ↓ -->*/}
                 <button className="clear-completed" onClick={this.clearCompleted}>Clear completed
                 </button>
