@@ -17,6 +17,42 @@ class App extends Component {
     }
 
     render() {
+        let main = (
+            <section className="main">
+                <input className="toggle-all" type="checkbox"/>
+                <label htmlFor="toggle-all">Mark all as complete</label>
+                <ul className="todo-list">
+                    {this.state.todos.map(t =>
+                        <Todo item={t}
+                              edit={this.editTodo}
+                              delete={this.deleteTodo}
+                              toggle={this.toggleTodo}
+                              toggleEditing={this.toggleEditingTodo}
+                        />)
+                    }
+                </ul>
+            </section>
+        );
+        let footer = (
+            <footer className="footer">
+                {/*<!-- This should be `0 items left` by default -->*/}
+                <span className="todo-count"><strong>0</strong> item left</span>
+                {/*<!-- Remove this if you don't implement routing -->*/}
+                <ul className="filters">
+                    <li>
+                        <a className="selected" href="#/">All</a>
+                    </li>
+                    <li>
+                        <a href="#/active">Active</a>
+                    </li>
+                    <li>
+                        <a href="#/completed">Completed</a>
+                    </li>
+                </ul>
+                {/*<!-- Hidden if no completed items are left ↓ -->*/}
+                <button className="clear-completed">Clear completed</button>
+            </footer>
+        );
         return (
             <div>
 
@@ -26,35 +62,9 @@ class App extends Component {
                                value={this.state.mainInput}/>
                 </header>
                 {/*<!-- This section should be hidden by default and shown when there are todos -->*/}
-                <section className="main">
-                    <input className="toggle-all" type="checkbox"/>
-                    <label htmlFor="toggle-all">Mark all as complete</label>
-                    <ul className="todo-list">
-                        {this.state.todos.map(t => <Todo item={t}
-                            edit={this.editTodo} delete={this.deleteTodo}
-                            toggle={this.toggleTodo} toggleEditing={this.toggleEditingTodo}
-                        />)}
-                    </ul>
-                </section>
+                {!!this.state.todos.length ? main : null}
                 {/*<!-- This footer should hidden by default and shown when there are todos -->*/}
-                { !!this.state.todos.length && <footer className="footer">
-                    {/*<!-- This should be `0 items left` by default -->*/}
-                    <span className="todo-count"><strong>0</strong> item left</span>
-                    {/*<!-- Remove this if you don't implement routing -->*/}
-                    <ul className="filters">
-                        <li>
-                            <a className="selected" href="#/">All</a>
-                        </li>
-                        <li>
-                            <a href="#/active">Active</a>
-                        </li>
-                        <li>
-                            <a href="#/completed">Completed</a>
-                        </li>
-                    </ul>
-                    {/*<!-- Hidden if no completed items are left ↓ -->*/}
-                    <button className="clear-completed">Clear completed</button>
-                </footer>}
+                {!!this.state.todos.length ? footer : null}
             </div>
 
         )

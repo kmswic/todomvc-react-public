@@ -10,7 +10,6 @@ export default class TodoInlineInput extends Component {
             defaultValue={t.title}
             onKeyUp={this.handleEnter}
             onBlur={this.save}
-            autoFocus={this.props.focus}
         />
     }
 
@@ -30,15 +29,16 @@ export default class TodoInlineInput extends Component {
     };
 
     save = () => {
-        if( this.props.todo.editing ) {
+        let {todo, del, edit, end} = this.props;
+        if( todo.editing ) {
             let value = this.input.value.trim();
-            let id = this.props.todo.id;
+            let id = todo.id;
             if( value === '' ) {
-                this.props.delete(id);
+                del(id);
             } else {
-                this.props.edit(id, value)
+                edit(id, value)
             }
-            this.props.end();
+            end();
         }
     }
 }
