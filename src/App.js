@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import MainInput from './components/MainInput';
-import Todo from './components/Todo';
+import TodoList from './components/TodoList';
 
 class App extends Component {
 
@@ -12,7 +12,6 @@ class App extends Component {
             todos    : [],
             filter   : 'all',
             maxId    : 0
-
         };
     }
 
@@ -21,27 +20,13 @@ class App extends Component {
             <section className="main">
                 <input className="toggle-all" type="checkbox" onChange={this.toggleAll}/>
                 <label htmlFor="toggle-all">Mark all as complete</label>
-                <ul className="todo-list">
-                    {this.state.todos
-                        .filter(t => {
-                            switch(this.state.filter) {
-                                case 'active':
-                                    return !t.completed;
-                                case 'completed':
-                                    return t.completed;
-                                default:
-                                    return true;
-                            }
-                        })
-                        .map(t =>
-                        <Todo item={t}
-                              edit={this.editTodo}
-                              delete={this.deleteTodo}
-                              toggle={this.toggleTodo}
-                              toggleEditing={this.toggleEditingTodo}
-                        />)
-                    }
-                </ul>
+                <TodoList todos={this.state.todos}
+                          filter={this.state.filter}
+                          edit={this.editTodo}
+                          delete={this.deleteTodo}
+                          toggle={this.toggleTodo}
+                          toggleEditing={this.toggleEditingTodo}
+                />
             </section>
         );
         let footer = (
@@ -80,9 +65,7 @@ class App extends Component {
                     <MainInput handleEnter={this.handleEnter} handleChange={this.handleInputChange}
                                value={this.state.mainInput}/>
                 </header>
-                {/*<!-- This section should be hidden by default and shown when there are todos -->*/}
                 {!!this.state.todos.length ? main : null}
-                {/*<!-- This footer should hidden by default and shown when there are todos -->*/}
                 {!!this.state.todos.length ? footer : null}
             </div>
 
