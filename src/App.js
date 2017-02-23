@@ -8,10 +8,10 @@ class App extends Component {
     constructor(props) {
         super();
         this.state = {
-            mainInput  : '',
-            todos      : [],
-            filterState: 'active',
-            maxId      : 0
+            mainInput: '',
+            todos    : [],
+            filter   : 'all',
+            maxId    : 0
 
         };
     }
@@ -22,7 +22,18 @@ class App extends Component {
                 <input className="toggle-all" type="checkbox" onChange={this.toggleAll}/>
                 <label htmlFor="toggle-all">Mark all as complete</label>
                 <ul className="todo-list">
-                    {this.state.todos.map(t =>
+                    {this.state.todos
+                        .filter(t => {
+                            switch(this.state.filter) {
+                                case 'active':
+                                    return !t.completed;
+                                case 'completed':
+                                    return t.completed;
+                                default:
+                                    return true;
+                            }
+                        })
+                        .map(t =>
                         <Todo item={t}
                               edit={this.editTodo}
                               delete={this.deleteTodo}
@@ -43,17 +54,22 @@ class App extends Component {
                 {/*<!-- Remove this if you don't implement routing -->*/}
                 <ul className="filters">
                     <li>
-                        <a className="selected" href="#/">All</a>
+                        <a className={this.state.filter === 'all' && 'selected'} href="#/"
+                           onClick={e => this.setState({filter: 'all'})}>All</a>
                     </li>
                     <li>
-                        <a href="#/active">Active</a>
+                        <a href="#/active" className={this.state.filter === 'active' && 'selected'}
+                           onClick={e => this.setState({filter: 'active'})}>Active</a>
                     </li>
                     <li>
-                        <a href="#/completed">Completed</a>
+                        <a href="#/completed"
+                           className={this.state.filter === 'completed' && 'selected'}
+                           onClick={e => this.setState({filter: 'completed'})}>Completed</a>
                     </li>
                 </ul>
                 {/*<!-- Hidden if no completed items are left ↓ -->*/}
-                <button className="clear-completed" onClick={this.clearCompleted}>Clear completed</button>
+                <button className="clear-completed" onClick={this.clearCompleted}>Clear completed
+                </button>
             </footer>
         );
         return (
