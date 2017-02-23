@@ -36,7 +36,10 @@ class App extends Component {
         let footer = (
             <footer className="footer">
                 {/*<!-- This should be `0 items left` by default -->*/}
-                <span className="todo-count"><strong>0</strong> item left</span>
+                <span className="todo-count">
+                    <strong>{this.state.todos.length} </strong>
+                     item{this.state.todos.length % 10 !== 1 ? 's' : null} left
+                </span>
                 {/*<!-- Remove this if you don't implement routing -->*/}
                 <ul className="filters">
                     <li>
@@ -50,7 +53,7 @@ class App extends Component {
                     </li>
                 </ul>
                 {/*<!-- Hidden if no completed items are left ↓ -->*/}
-                <button className="clear-completed">Clear completed</button>
+                <button className="clear-completed" onClick={this.clearCompleted}>Clear completed</button>
             </footer>
         );
         return (
@@ -87,8 +90,7 @@ class App extends Component {
 
 
     createTodo = (title) => {
-        let state = this.state;
-        this.setState({
+        this.setState(state => ({
             todos    : state.todos.concat({
                 id       : state.maxId + 1,
                 title,
@@ -97,7 +99,7 @@ class App extends Component {
             }),
             mainInput: '',
             maxId    : state.maxId + 1
-        });
+        }));
     };
 
     deleteTodo = (id) => {
@@ -107,15 +109,14 @@ class App extends Component {
     };
 
     updateTodo(id, fn) {
-        this.setState({
-            todos: this.state.todos.map(t => {
+        this.setState(state => ({
+            todos: state.todos.map(t => {
                 if( t.id === id ) {
-                    let newTodo = fn(t);
-                    return newTodo;
+                    return fn(t);
                 }
                 return t;
             })
-        })
+        }))
     };
 
     toggleTodo = id => {
@@ -137,6 +138,12 @@ class App extends Component {
             t.title = title;
             return t;
         })
+    };
+
+    clearCompleted = () => {
+        this.setState(state => ({
+            todos: state.todos.filter(t => !t.completed)
+        }))
     }
 }
 
