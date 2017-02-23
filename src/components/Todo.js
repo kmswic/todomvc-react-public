@@ -11,9 +11,7 @@ export default class Todo extends Component {
     render() {
         let t = this.props.item;
         return <li className={`${t.completed && 'completed'} ${t.editing && 'editing'}`} key={t.id}>
-            <div className="view"
-                 onDoubleClick={e => this.activate()}
-            >
+            <div className="view" onDoubleClick={e => this.activate()} >
                 <input type="checkbox"
                        className="toggle"
                        checked={t.completed}

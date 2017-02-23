@@ -22,7 +22,7 @@ class App extends Component {
 
                 <header className="header">
                     <h1>Todos</h1>
-                    <MainInput enterHandler={this.handleEnter} handleChange={this.handleInputChange}
+                    <MainInput handleEnter={this.handleEnter} handleChange={this.handleInputChange}
                                value={this.state.mainInput}/>
                 </header>
                 {/*<!-- This section should be hidden by default and shown when there are todos -->*/}
@@ -30,8 +30,6 @@ class App extends Component {
                     <input className="toggle-all" type="checkbox"/>
                     <label htmlFor="toggle-all">Mark all as complete</label>
                     <ul className="todo-list">
-                        {/*<!-- These are here just to show the structure of the list items -->*/}
-                        {/*<!-- List items should get the className `editing` when editing and `completed` when marked as completed -->*/}
                         {this.state.todos.map(t => <Todo item={t}
                             edit={this.editTodo} delete={this.deleteTodo}
                             toggle={this.toggleTodo} toggleEditing={this.toggleEditingTodo}
@@ -39,7 +37,7 @@ class App extends Component {
                     </ul>
                 </section>
                 {/*<!-- This footer should hidden by default and shown when there are todos -->*/}
-                <footer className="footer">
+                { !!this.state.todos.length && <footer className="footer">
                     {/*<!-- This should be `0 items left` by default -->*/}
                     <span className="todo-count"><strong>0</strong> item left</span>
                     {/*<!-- Remove this if you don't implement routing -->*/}
@@ -56,7 +54,7 @@ class App extends Component {
                     </ul>
                     {/*<!-- Hidden if no completed items are left ↓ -->*/}
                     <button className="clear-completed">Clear completed</button>
-                </footer>
+                </footer>}
             </div>
 
         )
