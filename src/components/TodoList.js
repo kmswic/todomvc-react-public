@@ -15,8 +15,9 @@ export default function TodoList(props) {
                             return true;
                     }
                 })
-                .map(t =>
-                    <Todo item={t} {...props} />)
+                .map((t, id) =>
+                    <Todo item={t} id={id} {...props} key={id} />)
+                .toArray()
             }
         </ul>
     )

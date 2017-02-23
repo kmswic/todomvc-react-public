@@ -6,18 +6,21 @@ export default class Todo extends Component {
 
     render() {
         let t = this.props.item;
+        let id = this.props.id;
         return (
-            <li className={`${t.completed && 'completed'} ${t.editing && 'editing'}`} key={t.id}>
+            <li className={`${t.completed && 'completed'} ${t.editing && 'editing'}`}>
                 <TodoView
                     item={t}
+                    id={id}
                     toggle={this.props.toggle}
                     deleteTodo={this.props.delete}
-                    activate={() => this.props.toggleEditing(t.id)}
+                    activate={() => this.props.toggleEditing(id)}
                 />
                 <TodoInlineInput
                     todo={t}
-                    end={() => this.props.toggleEditing(t.id)}
-                    activate={() => this.props.toggleEditing(t.id)}
+                    id={id}
+                    end={() => this.props.toggleEditing(id)}
+                    activate={() => this.props.toggleEditing(id)}
                     {...this.props}
                 />
             </li>

@@ -14,8 +14,8 @@ function FilterLink(props) {
 function FilterBox(props) {
     return (
         <ul className="filters">
-            {['all', 'active', 'completed'].map(link =>
-            <FilterLink name={link} {...props}/>)}
+            {['all', 'active', 'completed'].map((link, index) =>
+            <FilterLink name={link} {...props} key={index}/>)}
         </ul>
     )
 }

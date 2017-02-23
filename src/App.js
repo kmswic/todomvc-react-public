@@ -3,6 +3,7 @@ import './App.css';
 import MainInput from './components/MainInput';
 import TodoList from './components/TodoList';
 import FilterBox from './components/FilterBox';
+import Immutable from 'immutable';
 
 class App extends Component {
 
@@ -10,7 +11,7 @@ class App extends Component {
         super();
         this.state = {
             mainInput: '',
-            todos    : [],
+            todos    : Immutable.OrderedMap(),
             filter   : 'all',
             maxId    : 0
         };
@@ -34,8 +35,8 @@ class App extends Component {
             <footer className="footer">
                 {/*<!-- This should be `0 items left` by default -->*/}
                 <span className="todo-count">
-                    <strong>{this.state.todos.length} </strong>
-                     item{this.state.todos.length % 10 !== 1 ? 's' : null} left
+                    <strong>{this.state.todos.size} </strong>
+                     item{this.state.todos.size % 10 !== 1 ? 's' : null} left
                 </span>
                 {/*<!-- Remove this if you don't implement routing -->*/}
                 <FilterBox
@@ -55,8 +56,8 @@ class App extends Component {
                     <MainInput handleEnter={this.handleEnter} handleChange={this.handleInputChange}
                                value={this.state.mainInput}/>
                 </header>
-                {!!this.state.todos.length ? main : null}
-                {!!this.state.todos.length ? footer : null}
+                {!!this.state.todos.size ? main : null}
+                {!!this.state.todos.size ? footer : null}
             </div>
 
         )
@@ -79,32 +80,29 @@ class App extends Component {
 
 
     createTodo = (title) => {
-        this.setState(state => ({
-            todos    : state.todos.concat({
-                id       : state.maxId + 1,
-                title,
-                completed: false,
-                editing  : false,
-            }),
-            mainInput: '',
-            maxId    : state.maxId + 1
-        }));
+        this.setState(state => {
+            let maxId = state.maxId + 1;
+            return {
+                maxId,
+                todos: state.todos.set(maxId, {
+                    title,
+                    completed: false,
+                    editing  : false,
+                }),
+                mainInput: ''
+            }
+        })
     };
 
     deleteTodo = (id) => {
-        this.setState({
-            todos: this.state.todos.filter(t => t.id !== id)
-        })
+        this.setState(state => ({
+            todos: state.todos.delete(id)
+        }))
     };
 
     updateTodo(id, fn) {
         this.setState(state => ({
-            todos: state.todos.map(t => {
-                if( t.id === id ) {
-                    return fn(t);
-                }
-                return t;
-            })
+            todos: state.todos.update(id, fn)
         }))
     };
 

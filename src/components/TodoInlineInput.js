@@ -32,7 +32,7 @@ export default class TodoInlineInput extends Component {
         let {todo, del, edit, end} = this.props;
         if( todo.editing ) {
             let value = this.input.value.trim();
-            let id = todo.id;
+            let id = this.props.id;
             if( value === '' ) {
                 del(id);
             } else {
