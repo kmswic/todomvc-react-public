@@ -19,7 +19,7 @@ class App extends Component {
     render() {
         let main = (
             <section className="main">
-                <input className="toggle-all" type="checkbox"/>
+                <input className="toggle-all" type="checkbox" onChange={this.toggleAll}/>
                 <label htmlFor="toggle-all">Mark all as complete</label>
                 <ul className="todo-list">
                     {this.state.todos.map(t =>
@@ -143,6 +143,16 @@ class App extends Component {
     clearCompleted = () => {
         this.setState(state => ({
             todos: state.todos.filter(t => !t.completed)
+        }))
+    };
+
+    toggleAll = e => {
+        let value = e.target.checked;
+        this.setState(state => ({
+            todos: state.todos.map(t => {
+                t.completed = value;
+                return t;
+            })
         }))
     }
 }
