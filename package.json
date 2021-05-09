@@ -9,7 +9,7 @@
     "immutability-helper": "^2.1.2",
     "immutable": "^3.8.1",
     "jest": "^20.0.4",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "todomvc-app-css": "^2.0.6",
